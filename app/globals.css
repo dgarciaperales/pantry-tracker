@@ -31,3 +31,9 @@ body {
     text-wrap: balance;
   }
 }
+
+/* app/globals.css */
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
