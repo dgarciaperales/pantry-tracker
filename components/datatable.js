@@ -39,7 +39,7 @@ export default function DataTable() {
     //setRows(rows.filter(row => row.id !== id));
     //setFilteredRows(filteredRows.filter(row => row.id !== id));
     setRows((prevRows) => prevRows.filter(row => row.id !== id));
-    setFilteredRows((prevRows) => prevFilteredRows.filter(row => row.id !== id));
+    setFilteredRows((prevRows) => prevRows.filter(row => row.id !== id));
   };
 
   //Define the columns with 'handleRowRemove' in scope
