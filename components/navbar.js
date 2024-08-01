@@ -25,9 +25,6 @@ const NavBar = () => {
                             <ListItemText primary = "Home" />
                         </ListItem>
                         <ListItem button onClick={() => setDrawerOpen(false)}>
-                            <ListItemText primary = "Pantry" />
-                        </ListItem>
-                        <ListItem button onClick={() => setDrawerOpen(false)}>
                             <ListItemText primary = "Sign In" />
                         </ListItem>
                     </List>
@@ -36,14 +33,6 @@ const NavBar = () => {
                 <div className='flex space-x-4'>
                     <IconButton color = "inherit" className="hidden md:flex">
                         <Home fontSize = "large"/>
-                    </IconButton>
-
-                    <IconButton color = "inherit" className="hidden md:flex">
-                        <Search fontSize = "large"/>
-                    </IconButton>
-
-                    <IconButton color = "inherit" className="hidden md:flex">
-                        <Save fontSize = "large"/>
                     </IconButton>
 
                     <Tooltip title ="Sign In">
