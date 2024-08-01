@@ -27,7 +27,7 @@ export default function SignInPage() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center justify-center min-h-screen  bg-slate-400">
             <h2 className="text-3xl mb-4">{isSignUp ? 'Sign Up' : 'Sign In'}</h2>
             {error && <p className="text-red-500">{error}</p>}
             <input
@@ -44,10 +44,10 @@ export default function SignInPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="mb-2 p-2 border text-black"
             />
-            <button onClick={isSignUp ? handleSignUp : handleSignIn} className="p-2 bg-blue-500 text-white">
+            <button onClick={isSignUp ? handleSignUp : handleSignIn} className="p-2 bg-gray-500 text-white">
                 {isSignUp ? 'Sign Up' : 'Sign In'}
             </button>
-            <button onClick={() => setIsSignUp(!isSignUp)} className="p-2 bg-blue-500 text-white">
+            <button onClick={() => setIsSignUp(!isSignUp)} className="p-2 bg-gray-500 text-white">
                 {isSignUp ? 'Already have an account? Sign In' : "Don\'t have an account? Sign Up"}
             </button>
         </div>

@@ -1,12 +1,22 @@
 import React, {useState} from 'react';
 import { IconButton, Tooltip, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { Menu, Home, Save, AccountCircle, Search} from '@mui/icons-material';
+import { signOut } from 'firebase/auth';
+import { auth } from '../app/firebase';
 
 const NavBar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     const handleDrawerToggle = () => {
         setDrawerOpen(!drawerOpen);
+    };
+
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            console.error("Error signing out: ", error);
+        }
     };
 
     return (
@@ -22,21 +32,14 @@ const NavBar = () => {
                 <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
                     <List>
                         <ListItem button onClick={() => setDrawerOpen(false)}>
-                            <ListItemText primary = "Home" />
-                        </ListItem>
-                        <ListItem button onClick={() => setDrawerOpen(false)}>
                             <ListItemText primary = "Sign In" />
                         </ListItem>
                     </List>
                 </Drawer>
 
                 <div className='flex space-x-4'>
-                    <IconButton color = "inherit" className="hidden md:flex">
-                        <Home fontSize = "large"/>
-                    </IconButton>
-
-                    <Tooltip title ="Sign In">
-                        <IconButton color = "inherit" className="hidden md:flex">
+                    <Tooltip title ="Sign Out">
+                        <IconButton color = "inherit" className="hidden md:flex" onClick={handleSignOut}>
                             <AccountCircle fontSize = "large"/>
                         </IconButton>
                     </Tooltip>
