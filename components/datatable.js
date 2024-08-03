@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../app/firebase';
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import TextField from "@mui/material/TextField";
+import { addItem, fetchItems, updateItem, deleteItem } from '../app/services/firestoreService';
 //import { Icon } from '@mui/material';
 
 /*
@@ -27,19 +28,27 @@ export default function DataTable() {
 
   //Function to handle row removal
   const fetchData = async () => {
-    const querySnapshot = await getDocs(collection(db, 'items'));
-    const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setRows(items);
-    setFilteredRows(items);
+    try {
+      const items = await fetchItems();
+      setRows(items);
+      setFilteredRows(items);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
   };
 
 
   const handleRowRemove = async (id) => {
-    await deleteDoc(doc(db, 'items', id));
+    try {
+      await deleteItem(id);
+      setRows((prevRows) => prevRows.filter(row => row.id !== id));
+      setFilteredRows((prevRows) => prevRows.filter(row => row.id !== id));
+    } catch (error) {
+      console.error("Error removing row: ", error);
+    }
     //setRows(rows.filter(row => row.id !== id));
     //setFilteredRows(filteredRows.filter(row => row.id !== id));
-    setRows((prevRows) => prevRows.filter(row => row.id !== id));
-    setFilteredRows((prevRows) => prevRows.filter(row => row.id !== id));
+    
   };
 
   //Define the columns with 'handleRowRemove' in scope
@@ -57,7 +66,10 @@ export default function DataTable() {
           <input
             type="number"
             value={params.value}
-            onChange={(e) => params.api.setEditCellValue({ id: params.id, field: 'quantity', value: e.target.value })}
+            //onChange={(e) => params.api.setEditCellValue({ id: params.id, field: 'quantity', value: e.target.value })}
+            onChange={async (e) => {
+              await params.api.setEditCellValue({ id: params.id, field: 'quantity', value: e.target.value });
+            }}
             style={{ width: "100%" }}
           />
         </div>
@@ -97,39 +109,36 @@ export default function DataTable() {
   };
 
   const handleRowAdd = async () => {
-    const newRow = { item, brand, quantity: parseInt(quantity, 10) };
-    const existingRow = rows.find(row => row.item === item && row.brand === brand);
+    try {
+      const newRow = { item, brand, quantity: parseInt(quantity, 10) };
+      const existingRow = rows.find(row => row.item === item && row.brand === brand);
 
-    if (existingRow) {
-      const updatedQuantity = existingRow.quantity + newRow.quantity;
-      const updatedRow = { ...existingRow, quantity: updatedQuantity };
-      await updateDoc(doc(db, 'items', existingRow.id), updatedRow);
-      //setRows(rows.map(row => (row.id === existingRow.id ? updatedRow : row)));
-      //setRows((prevRows) => prevRows.map(row => (row.id === existingRow.id ? updatedRow: row)));
-      //setFilteredRows((prevFilteredRows) => prevFilteredRows.map(row => (row.id === existingRow.id ? updatedRow : row)));
-    } else {
-      const docRef = await addDoc(collection(db, 'items'), newRow);
-      const addedRow = { id: docRef.id, ...newRow };
-      //Add new row to state immediately
-      //setRows((prevRows) => [...prevRows, addedRow]);
-      //setFilteredRows((prevFilteredRows) => [...prevFilteredRows, addedRow]);
+      if (existingRow) {
+        const updatedQuantity = existingRow.quantity + newRow.quantity;
+        const updatedRow = { ...existingRow, quantity: updatedQuantity };
+        await updateItem(existingRow.id, updatedRow);
+      } else {
+        await addItem(newRow);
+      }
+      setItem('');
+      setBrand('');
+      setQuantity('');
+
+      fetchData();
+    } catch (error) {
+      console.error("Error adding row: ", error);
     }
-
-    setItem('');
-    setBrand('');
-    setQuantity('');
-
-    fetchData();
   };
 
   const handleRowEdit = async (newRow) => {
-    const { id, ...updateData } = newRow;
-    await updateDoc(doc(db, 'items', id), updateData);
-    //added 2 lines
-    //setRows((prevRows) => prevRows.map(row => (row.id === id ? newRow: row)));
-    //setFilteredRows((prevFilteredRows) => prevFilteredRows.map(row => (row.id === id ? newRow : row)));
-    fetchData();
-    return newRow;
+    try {
+      const { id, ...updateData } = newRow;
+      await updateItem(id, updateData);
+      fetchData();
+      return newRow;
+    } catch (error) {
+      console.error("Error editing row: ", error);
+    }
   };
 
   return (
