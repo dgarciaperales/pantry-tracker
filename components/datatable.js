@@ -195,13 +195,3 @@ export default function DataTable() {
     </div>
   );
 }
-
-
-
-
-  /*
-  useEffect(() => {
-    setFilteredRows(rows.filter(row => row.item.toLowerCase().includes(searchTerm.toLowerCase())));
-  }, [searchTerm, rows]);
-  */
-
