@@ -5,7 +5,7 @@ import React from "react";
 import { collection, addDoc } from "firebase/firestore"; 
 import { useEffect, useState } from "react";
 import NavBar from "../components/navbar";
-import DataTable from "../components/DataTable";
+import DataTable from "../components/dt";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import SignInPage from "../components/SignInPage";
